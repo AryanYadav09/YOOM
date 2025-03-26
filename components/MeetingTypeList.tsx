@@ -1,30 +1,28 @@
-/* eslint-disable camelcase */
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-import HomeCard from './HomeCard';
-import MeetingModal from './MeetingModal';
-import { Call, useStreamVideoClient } from '@stream-io/video-react-sdk';
-import { useUser } from '@clerk/nextjs';
-import Loader from './Loader';
-import { Textarea } from './ui/textarea';
-import ReactDatePicker from 'react-datepicker';
-import { useToast } from './ui/use-toast';
-import { Input } from './ui/input';
-
+import HomeCard from "./HomeCard";
+import MeetingModal from "./MeetingModal";
+import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
+import { useUser } from "@clerk/nextjs";
+import Loader from "./Loader";
+import { Textarea } from "./ui/textarea";
+import ReactDatePicker from "react-datepicker";
+import { useToast } from "./ui/use-toast";
+import { Input } from "./ui/input";
 
 const initialValues = {
   dateTime: new Date(),
-  description: '',
-  link: '',
+  description: "",
+  link: "",
 };
 
 const MeetingTypeList = () => {
   const router = useRouter();
   const [meetingState, setMeetingState] = useState<
-    'isScheduleMeeting' | 'isJoiningMeeting' | 'isInstantMeeting' | undefined
+    "isScheduleMeeting" | "isJoiningMeeting" | "isInstantMeeting" | undefined
   >(undefined);
   const [values, setValues] = useState(initialValues);
   const [callDetail, setCallDetail] = useState<Call>();
@@ -36,15 +34,15 @@ const MeetingTypeList = () => {
     if (!client || !user) return;
     try {
       if (!values.dateTime) {
-        toast({ title: 'Please select a date and time' });
+        toast({ title: "Please select a date and time" });
         return;
       }
       const id = crypto.randomUUID();
-      const call = client.call('default', id);
-      if (!call) throw new Error('Failed to create meeting');
+      const call = client.call("default", id);
+      if (!call) throw new Error("Failed to create meeting");
       const startsAt =
         values.dateTime.toISOString() || new Date(Date.now()).toISOString();
-      const description = values.description || 'Instant Meeting';
+      const description = values.description || "Instant Meeting";
       await call.getOrCreate({
         data: {
           starts_at: startsAt,
@@ -58,11 +56,11 @@ const MeetingTypeList = () => {
         router.push(`/meeting/${call.id}`);
       }
       toast({
-        title: 'Meeting Created',
+        title: "Meeting Created",
       });
     } catch (error) {
       console.error(error);
-      toast({ title: 'Failed to create Meeting' });
+      toast({ title: "Failed to create Meeting" });
     }
   };
 
