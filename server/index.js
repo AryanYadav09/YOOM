@@ -37,8 +37,28 @@ const startServer = async () => {
         const token = streamClient.createToken(userId, expirationTime, issuedAt);
         res.json({ token });
     });
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
         console.log(`Stream token server running on http://localhost:${port}`);
+    });
+    server.on("error", async (error) => {
+        if (error?.code !== "EADDRINUSE") {
+            console.error("Token server failed to start", error);
+            process.exit(1);
+            return;
+        }
+        try {
+            const response = await fetch(`http://localhost:${port}/api/health`);
+            if (response.ok) {
+                console.log(`Token server already running on http://localhost:${port}. Reusing existing instance.`);
+                process.exit(0);
+                return;
+            }
+        }
+        catch (healthCheckError) {
+            console.error("Health check on occupied port failed", healthCheckError);
+        }
+        console.error(`Port ${port} is already in use by another process. Free that port or set PORT/VITE_API_BASE_URL.`);
+        process.exit(1);
     });
 };
 startServer().catch((error) => {

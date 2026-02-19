@@ -3,6 +3,7 @@ import { useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useNavigate } from "react-router-dom";
 import { useGetCallById } from "@/hooks/useGetCallById";
 import { Button } from "@/components/ui/button";
+import AnimatedButtonText from "@/components/ui/animated-button-text";
 import { useToast } from "@/components/ui/use-toast";
 import { getMeetingLink, getMeetingPath } from "@/lib/urls";
 const Table = ({ title, description, }) => {
@@ -45,7 +46,7 @@ const PersonalRoomPage = () => {
       </div>
       <div className="flex gap-5">
         <Button className="bg-blue-1" onClick={startRoom}>
-          Start Meeting
+          <AnimatedButtonText text="Start Meeting"/>
         </Button>
         <Button className="bg-dark-3" onClick={() => {
             navigator.clipboard.writeText(meetingLink);
@@ -53,7 +54,7 @@ const PersonalRoomPage = () => {
                 title: "Link Copied",
             });
         }}>
-          Copy Invitation
+          <AnimatedButtonText text="Copy Invitation"/>
         </Button>
       </div>
     </section>);

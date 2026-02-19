@@ -1,6 +1,8 @@
 import { useCall, useCallStateHooks } from '@stream-io/video-react-sdk';
 import { useNavigate } from "react-router-dom";
 import { Button } from './ui/button';
+import AnimatedButtonText from "./ui/animated-button-text";
+
 const EndCallButton = () => {
     const call = useCall();
     const navigate = useNavigate();
@@ -19,7 +21,7 @@ const EndCallButton = () => {
         navigate('/');
     };
     return (<Button onClick={endCall} className="bg-red-500">
-      End call for everyone
+      <AnimatedButtonText text="End call for everyone"/>
     </Button>);
 };
 export default EndCallButton;

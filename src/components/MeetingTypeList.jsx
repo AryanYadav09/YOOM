@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useUser } from "@clerk/clerk-react";
 import { useStreamVideoClient } from "@stream-io/video-react-sdk";
 import ReactDatePicker from "react-datepicker";
+import { gsap } from "gsap";
 
 import HomeCard from "./HomeCard";
 import Loader from "./Loader";
@@ -21,6 +22,7 @@ const initialValues = {
 
 const MeetingTypeList = () => {
   const navigate = useNavigate();
+  const sectionRef = useRef(null);
   const [meetingState, setMeetingState] = useState();
   const [values, setValues] = useState(initialValues);
   const [callDetail, setCallDetail] = useState();
@@ -35,6 +37,29 @@ const MeetingTypeList = () => {
     () => (callDetail ? getMeetingLink(callDetail.id) : ""),
     [callDetail]
   );
+
+  useLayoutEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return undefined;
+    }
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        "[data-home-card]",
+        { opacity: 0, y: 40, scale: 0.96 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          stagger: 0.08,
+          duration: 0.65,
+          ease: "power3.out",
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const createMeeting = async () => {
     if (!client || !user) return;
@@ -83,32 +108,36 @@ const MeetingTypeList = () => {
   if (!client || !user) return <Loader />;
 
   return (
-    <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4 opacity-100 visible">
+    <section
+      ref={sectionRef}
+      className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4 opacity-100 visible"
+    >
       <HomeCard
         img="/icons/add-meeting.svg"
         title="New Meeting"
         description="Start an instant meeting"
+        className="bg-[#8b5d45]"
         handleClick={() => setMeetingState("isInstantMeeting")}
       />
       <HomeCard
         img="/icons/join-meeting.svg"
         title="Join Meeting"
         description="via invitation link"
-        className="bg-blue-1"
+        className="bg-[#3d5f8d]"
         handleClick={() => setMeetingState("isJoiningMeeting")}
       />
       <HomeCard
         img="/icons/schedule.svg"
         title="Schedule Meeting"
         description="Plan your meeting"
-        className="bg-purple-1"
+        className="bg-[#5f4f85]"
         handleClick={() => setMeetingState("isScheduleMeeting")}
       />
       <HomeCard
         img="/icons/recordings.svg"
         title="View Recordings"
         description="Meeting Recordings"
-        className="bg-yellow-1"
+        className="bg-[#867438]"
         handleClick={() => navigate("/recordings")}
       />
 

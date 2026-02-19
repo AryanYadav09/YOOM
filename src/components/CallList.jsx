@@ -100,6 +100,7 @@ const CallList = ({ type }) => {
               meeting.start_time?.toLocaleString()
             }
             isPreviousMeeting={type === "ended"}
+            showAvatars={type === "upcoming"}
             link={type === "recordings" ? meeting.url : getMeetingLink(meeting.id)}
             buttonIcon1={type === "recordings" ? "/icons/play.svg" : undefined}
             buttonText={type === "recordings" ? "Play" : "Start"}

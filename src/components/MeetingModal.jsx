@@ -1,6 +1,8 @@
 import { Dialog, DialogContent } from "./ui/dialog";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
+import AnimatedButtonText from "./ui/animated-button-text";
+
 const MeetingModal = ({ isOpen, onClose, title, className, children, handleClick, buttonText, image, buttonIcon, }) => {
     return (<Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="flex w-full max-w-[520px] flex-col gap-6 border-none bg-dark-1 px-6 py-9 text-white">
@@ -14,8 +16,9 @@ const MeetingModal = ({ isOpen, onClose, title, className, children, handleClick
           {children}
           <Button className={"bg-blue-1 focus-visible:ring-0 focus-visible:ring-offset-0"} onClick={handleClick}>
             {buttonIcon && (<img src={buttonIcon} alt="button icon" width={13} height={13}/>)}{" "}
-            &nbsp;
-            {buttonText || "Schedule Meeting"}
+            <span className={buttonIcon ? "ml-2" : ""}>
+              <AnimatedButtonText text={buttonText || "Schedule Meeting"}/>
+            </span>
           </Button>
         </div>
       </DialogContent>
