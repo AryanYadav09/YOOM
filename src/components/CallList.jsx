@@ -1,69 +1,120 @@
-'use client';
-import Loader from './Loader';
-import { useGetCalls } from '@/hooks/useGetCalls';
-import MeetingCard from './MeetingCard';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMeetingLink, getMeetingPath } from "@/lib/urls";
+
+import Loader from "./Loader";
+import MeetingCard from "./MeetingCard";
+import { useGetCalls } from "@/hooks/useGetCalls";
+
 const CallList = ({ type }) => {
-    const navigate = useNavigate();
-    const { endedCalls, upcomingCalls, callRecordings, isLoading } = useGetCalls();
-    const [recordings, setRecordings] = useState([]);
-    const getCalls = () => {
-        switch (type) {
-            case 'ended':
-                return endedCalls;
-            case 'recordings':
-                return recordings;
-            case 'upcoming':
-                return upcomingCalls;
-            default:
-                return [];
+  const navigate = useNavigate();
+  const { endedCalls, upcomingCalls, callRecordings, isLoading } = useGetCalls();
+  const [recordings, setRecordings] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchRecordings = async () => {
+      if (type !== "recordings") {
+        if (isMounted) {
+          setRecordings([]);
         }
+        return;
+      }
+
+      try {
+        const callData = await Promise.all(
+          (callRecordings ?? []).map((meeting) => meeting.queryRecordings())
+        );
+
+        const nextRecordings = callData
+          .filter((call) => call.recordings.length > 0)
+          .flatMap((call) => call.recordings);
+
+        if (isMounted) {
+          setRecordings(nextRecordings);
+        }
+      } catch (error) {
+        console.error(error);
+        if (isMounted) {
+          setRecordings([]);
+        }
+      }
     };
-    const getNoCallsMessage = () => {
-        switch (type) {
-            case 'ended':
-                return 'No Previous Calls';
-            case 'upcoming':
-                return 'No Upcoming Calls';
-            case 'recordings':
-                return 'No Recordings';
-            default:
-                return '';
-        }
+
+    fetchRecordings();
+
+    return () => {
+      isMounted = false;
     };
-    useEffect(() => {
-        const fetchRecordings = async () => {
-            const callData = await Promise.all(callRecordings?.map((meeting) => meeting.queryRecordings()) ?? []);
-            const recordings = callData
-                .filter((call) => call.recordings.length > 0)
-                .flatMap((call) => call.recordings);
-            setRecordings(recordings);
-        };
-        if (type === 'recordings') {
-            fetchRecordings();
-        }
-    }, [type, callRecordings]);
-    if (isLoading)
-        return <Loader />;
-    const calls = getCalls();
-    const noCallsMessage = getNoCallsMessage();
-    return (<div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
-      {calls && calls.length > 0 ? (calls.map((meeting) => (<MeetingCard key={type === "recordings"
-                ? meeting.url
-                : meeting.id} icon={type === 'ended'
-                ? '/icons/previous.svg'
-                : type === 'upcoming'
-                    ? '/icons/upcoming.svg'
-                    : '/icons/recordings.svg'} title={meeting.state?.custom?.description ||
-                meeting.filename?.substring(0, 20) ||
-                'No Description'} date={meeting.state?.startsAt?.toLocaleString() ||
-                meeting.start_time?.toLocaleString()} isPreviousMeeting={type === 'ended'} link={type === 'recordings'
-                ? meeting.url
-                : getMeetingLink(meeting.id)} buttonIcon1={type === 'recordings' ? '/icons/play.svg' : undefined} buttonText={type === 'recordings' ? 'Play' : 'Start'} handleClick={type === 'recordings'
+  }, [type, callRecordings]);
+
+  const calls = useMemo(() => {
+    switch (type) {
+      case "ended":
+        return endedCalls;
+      case "recordings":
+        return recordings;
+      case "upcoming":
+        return upcomingCalls;
+      default:
+        return [];
+    }
+  }, [type, endedCalls, recordings, upcomingCalls]);
+
+  const noCallsMessage = useMemo(() => {
+    switch (type) {
+      case "ended":
+        return "No Previous Calls";
+      case "upcoming":
+        return "No Upcoming Calls";
+      case "recordings":
+        return "No Recordings";
+      default:
+        return "";
+    }
+  }, [type]);
+
+  if (isLoading) return <Loader />;
+
+  return (
+    <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+      {calls && calls.length > 0 ? (
+        calls.map((meeting) => (
+          <MeetingCard
+            key={type === "recordings" ? meeting.url : meeting.id}
+            icon={
+              type === "ended"
+                ? "/icons/previous.svg"
+                : type === "upcoming"
+                  ? "/icons/upcoming.svg"
+                  : "/icons/recordings.svg"
+            }
+            title={
+              meeting.state?.custom?.description ||
+              meeting.filename?.substring(0, 20) ||
+              "No Description"
+            }
+            date={
+              meeting.state?.startsAt?.toLocaleString() ||
+              meeting.start_time?.toLocaleString()
+            }
+            isPreviousMeeting={type === "ended"}
+            link={type === "recordings" ? meeting.url : getMeetingLink(meeting.id)}
+            buttonIcon1={type === "recordings" ? "/icons/play.svg" : undefined}
+            buttonText={type === "recordings" ? "Play" : "Start"}
+            handleClick={
+              type === "recordings"
                 ? () => window.open(meeting.url, "_blank", "noopener,noreferrer")
-                : () => navigate(getMeetingPath(meeting.id))}/>))) : (<h1 className="text-2xl font-bold text-white">{noCallsMessage}</h1>)}
-    </div>);
+                : () => navigate(getMeetingPath(meeting.id))
+            }
+          />
+        ))
+      ) : (
+        <h1 className="text-2xl font-bold text-white">{noCallsMessage}</h1>
+      )}
+    </div>
+  );
 };
+
 export default CallList;

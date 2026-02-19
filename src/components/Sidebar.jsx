@@ -1,4 +1,3 @@
-'use client';
 import { Link, useLocation } from "react-router-dom";
 import { sidebarLinks } from "@/constants";
 import { cn } from "@/lib/utils";

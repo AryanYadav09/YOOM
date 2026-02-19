@@ -1,4 +1,3 @@
-'use client';
 import { Link, useLocation } from "react-router-dom";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { sidebarLinks } from '@/constants';

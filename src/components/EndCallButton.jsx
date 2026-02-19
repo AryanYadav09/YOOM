@@ -1,4 +1,3 @@
-'use client';
 import { useCall, useCallStateHooks } from '@stream-io/video-react-sdk';
 import { useNavigate } from "react-router-dom";
 import { Button } from './ui/button';
