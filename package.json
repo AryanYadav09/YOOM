@@ -3,13 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "vite",
+    "dev:server": "tsx server/index.js",
+    "build": "vite build",
+    "preview": "concurrently \"npm run dev:server\" \"vite preview\"",
+    "lint": "eslint ."
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.12.8",
+    "@clerk/clerk-react": "^5.43.0",
     "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-dropdown-menu": "^2.1.6",
     "@radix-ui/react-popover": "^1.1.6",
@@ -17,27 +19,30 @@
     "@radix-ui/react-toast": "^1.2.6",
     "@stream-io/node-sdk": "^0.4.19",
     "@stream-io/video-react-sdk": "^1.12.11",
-    "@types/react-datepicker": "^6.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
     "lucide-react": "^0.477.0",
-    "next": "15.2.0",
     "react": "^18.3.1",
     "react-datepicker": "^8.2.1",
     "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.1",
     "sonner": "^2.0.1",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
+    "@eslint/js": "^9.36.0",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.1.0",
+    "concurrently": "^9.2.1",
     "eslint": "^9",
-    "eslint-config-next": "15.2.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.4.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.20.5",
+    "vite": "^7.1.7"
   }
 }

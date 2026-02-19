@@ -1,24 +1,39 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import js from "@eslint/js";
+import globals from "globals";
+import reactPlugin from "eslint-plugin-react";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.config({
-    extends: ['next'],
-    rules: {
-      'react/no-unescaped-entities': 'off',
-      '@next/next/no-page-custom-font': 'off',
-      "@typescript-eslint/no-unused-vars": "warn"
+export default [
+  {
+    ignores: ["dist", ".next", "node_modules", "_js_migration_*"],
+  },
+  js.configs.recommended,
+  {
+    files: ["**/*.{js,jsx,mjs}"],
+    plugins: {
+      react: reactPlugin,
     },
-  }),
-
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+    rules: {
+      "no-unused-vars": ["warn", { varsIgnorePattern: "^React$" }],
+      "react/jsx-uses-vars": "warn",
+      "react/react-in-jsx-scope": "off",
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
+  },
 ];
-
-export default eslintConfig;

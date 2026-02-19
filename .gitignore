@@ -19,10 +19,12 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
 *.pem
+/_js_migration_1
 
 # debug
 npm-debug.log*
