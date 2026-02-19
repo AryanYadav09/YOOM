@@ -1,13 +1,11 @@
 {
-  "name": "zoomclone",
+  "name": "zoomclone-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
-    "dev:client": "vite",
-    "dev:server": "tsx server/index.js",
+    "dev": "vite",
     "build": "vite build",
-    "preview": "concurrently \"npm run dev:server\" \"vite preview\"",
+    "preview": "vite preview",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -17,13 +15,9 @@
     "@radix-ui/react-popover": "^1.1.6",
     "@radix-ui/react-slot": "^1.1.2",
     "@radix-ui/react-toast": "^1.2.6",
-    "@stream-io/node-sdk": "^0.4.19",
     "@stream-io/video-react-sdk": "^1.12.11",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.6.1",
-    "express": "^4.21.2",
     "gsap": "^3.13.0",
     "lucide-react": "^0.477.0",
     "react": "^18.3.1",
@@ -37,12 +31,10 @@
     "@eslint/js": "^9.36.0",
     "@tailwindcss/postcss": "^4",
     "@vitejs/plugin-react": "^5.1.0",
-    "concurrently": "^9.2.1",
     "eslint": "^9",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.4.0",
     "tailwindcss": "^4",
-    "tsx": "^4.20.5",
     "vite": "^7.1.7"
   }
 }

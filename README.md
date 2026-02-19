@@ -1,41 +1,56 @@
-This is a React (Vite) video-calling app with Clerk authentication and Stream Video SDK.
+This project is split into two deployable apps:
 
-## Getting Started
+- `frontend/`: React + Vite client
+- `backend/`: Express token API for Stream
 
-Install dependencies:
+## Local Development
+
+Install dependencies in each app:
 
 ```bash
+cd frontend
 npm install
 ```
 
-Run the app in development mode (client + token server):
+```bash
+cd ../backend
+npm install
+```
+
+Run each app in separate terminals:
 
 ```bash
+cd frontend
+npm run dev
+```
+
+```bash
+cd backend
 npm run dev
 ```
 
 This starts:
-- Vite client on `http://localhost:5173`
-- Stream token server on `http://localhost:3001`
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:3001`
 
-Build for production:
+## Folder Setup
 
-```bash
-npm run build
-```
+- `frontend/.env.local`: frontend environment variables
+- `backend/.env.local`: backend environment variables
+- `frontend/.env.example` and `backend/.env.example`: templates
 
-Preview build (also starts token server):
-
-```bash
-npm run preview
-```
-
-## Environment
-
-Required variables in `.env.local`:
+Frontend env:
 - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
 - `NEXT_PUBLIC_STREAM_API_KEY`
-- `STREAM_SECRET_KEY`
+- `VITE_API_BASE_URL`
 
-Optional:
-- `VITE_API_BASE_URL` (default: `http://localhost:3001`)
+Backend env:
+- `STREAM_API_KEY`
+- `STREAM_SECRET_KEY`
+- `PORT` (optional, default `3001`)
+
+## Deploy
+
+1. Deploy `frontend/` to Vercel.
+2. Deploy `backend/` to a Node host (Render/Railway/Fly, etc.).
+3. Set `frontend` env `VITE_API_BASE_URL` to your deployed backend URL.

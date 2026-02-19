@@ -2,9 +2,12 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import { Buffer } from "node:buffer";
+import { createRequire } from "node:module";
+
 dotenv.config({ path: ".env.local" });
 dotenv.config();
-const bufferModule = require("buffer");
+const require = createRequire(import.meta.url);
+const bufferModule = require("node:buffer");
 if (!bufferModule.SlowBuffer) {
     bufferModule.SlowBuffer = Buffer;
 }
@@ -12,7 +15,7 @@ const startServer = async () => {
     const { StreamClient } = await import("@stream-io/node-sdk");
     const app = express();
     const port = Number(process.env.PORT) || 3001;
-    const streamApiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY || process.env.VITE_STREAM_API_KEY;
+    const streamApiKey = process.env.STREAM_API_KEY || process.env.NEXT_PUBLIC_STREAM_API_KEY || process.env.VITE_STREAM_API_KEY;
     const streamApiSecret = process.env.STREAM_SECRET_KEY || process.env.VITE_STREAM_SECRET_KEY;
     if (!streamApiKey) {
         throw new Error("Missing Stream API key");
